@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AirBrush 产品文档可视化</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+  <style>
+    :root{--bg:#fafbfd;--text:#0f1724;--muted:#6b7280;--accent:#2563eb}
+    html,body{height:100%;margin:0;font-family:Inter,Segoe UI,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);}
+    .wrap{display:flex;gap:20px;padding:24px;box-sizing:border-box}
+    .sidebar{width:300px;max-height:calc(100vh - 48px);overflow:auto;background:rgba(255,255,255,0.6);backdrop-filter:blur(6px);border-radius:12px;padding:16px;border:1px solid rgba(15,23,36,0.06)}
+    .content{flex:1;max-height:calc(100vh - 48px);overflow:auto;padding:28px;background:linear-gradient(180deg,rgba(255,255,255,0.8),rgba(255,255,255,0.9));border-radius:12px;border:1px solid rgba(15,23,36,0.04)}
+    h1,h2,h3{color:var(--text);}
+    .toc h3{margin:0 0 8px 0;font-size:14px}
+    .toc ul{list-style:none;padding-left:0;margin:8px 0}
+    .toc a{display:block;padding:6px 8px;border-radius:6px;color:var(--text);text-decoration:none}
+    .toc a:hover{background:rgba(37,99,235,0.06);color:var(--accent)}
+    .controls{display:flex;gap:8px;margin-bottom:12px}
+    .btn{padding:8px 10px;border-radius:8px;border:1px solid rgba(15,23,36,0.06);background:white;color:var(--text);cursor:pointer}
+    .search{flex:1;padding:8px;border-radius:8px;border:1px solid rgba(15,23,36,0.06)}
+    .section{margin-bottom:18px}
+    pre{background:#0b1220;color:#e6eef8;padding:12px;border-radius:8px;overflow:auto}
+    code{background:#eef2ff;padding:2px 6px;border-radius:6px}
+    .meta{color:var(--muted);font-size:13px;margin-bottom:12px}
+    .summary{display:flex;align-items:center;gap:8px;cursor:pointer}
+    .toggle{margin-left:auto;color:var(--muted);font-size:13px}
+    details summary::-webkit-details-marker{display:none}
+    .badge{display:inline-block;background:rgba(37,99,235,0.08);color:var(--accent);padding:4px 8px;border-radius:999px;font-size:12px}
+    @media (max-width:900px){.wrap{flex-direction:column}.sidebar{width:100%;max-height:220px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <aside class="sidebar">
+      <div class="controls">
+        <input id="search" class="search" placeholder="搜索章节或关键词..." />
+        <button id="toggleAll" class="btn">全部折叠</button>
+      </div>
+      <div class="toc">
+        <h3>目录 (点击跳转)</h3>
+        <nav id="tocList"></nav>
+        <div class="meta">交互：点击目录跳转；使用顶部搜索筛选；展开/折叠层级以分层阅读。</div>
+      </div>
+    </aside>
+
+    <main class="content">
+      <h1>AirBrush 产品文档</h1>
+      <div class="meta">来源：README.md · 可交互分层视图</div>
+      <div id="rendered"></div>
+    </main>
+  </div>
+
+  <script id="md-content" type="text/plain">
+# AirBrush 海外影像产品理解文档
+
+## 1. 产品基础概述
+
+### 1.1 主体公司背景
+
+AirBrush 开发主体为美图旗下新加坡独立海外子公司 **Pixocial**，美图采取国内外业务完全隔离运营策略，Pixocial 独立负责海外研发、商业化、市场投放，不与国内美图秀秀团队共用产品体系、算法投放渠道。
+2015 年全球首发，是美图出海**第一款实现规模化盈利**的影像修图 App，承担美图欧美、拉美市场核心营收任务。
+
+### 1.2 海外三条产品线分层布局（内部无内卷，市场完全隔离）
+
+表格
+
+| 产品 | 目标市场 | 核心定位 | 核心用户 |
+| --- | --- | --- | --- |
+| AirBrush | 欧美、拉美 | 原生自然人像精修，保留皮肤质感 | 海外 Z 世代、户外 / 健身博主、轻度商业创作者 |
+| BeautyPlus | 日韩、东南亚 | 轻量日常美颜，软萌少女风 | 亚洲海外普通年轻女性、自拍用户 |
+| Vmake | 全球（侧重北美） | AI 虚拟试妆、妆容特效 | 美妆博主、美妆品牌合作渠道 |
+
+补充衍生产品：AirBrush Studio（桌面专业修图工具，面向小型摄影师）、ZAWA（AI 视频创作工具）。
+
+### 1.3 核心产品定位
+
+slogan 底层逻辑：**自然增强，而非五官改造**
+区别于行业主流 “完美假面修图”，自研肤色肤质 AI 模型，修图强制保留雀斑、毛孔、原生肤色纹理，适配户外纪实、自然光人像，精准匹配欧美 Z 世代反过度美颜审美趋势。
+
+### 1.4 核心运营数据
+
+1. 累计全球下载量：9800 万 +
+2. 付费转化率：超 10%（影像工具类头部水平）
+3. 用户地域分布：巴西占 50% 以上，美国 25%，剩余欧洲、拉美各国
+4. 市场排名：北美美图系影像 MAU 合计 350 万，细分赛道第一；欧洲市场 MAU 仅次于 FaceApp，排名第二
+5. 商业化定价：移动端订阅 $7.99 / 月、$35.99 / 年；桌面 Studio $12.95 / 月
+
+## 2. 目标用户分层分析
+
+### 2.1 核心人群 1：海外 Z 世代普通年轻用户（免费流量基本盘）
+
+- 年龄：16-28 岁，北美、拉美学生、上班族
+- 使用场景：日常自拍、周末露营、短途徒步、健身打卡、旅行随拍
+- 核心诉求：一键出片，操作简单，修完不假面，免费基础功能够用，少量高级功能愿意小额订阅
+- 审美偏好：低饱和、胶片纪实、保留皮肤瑕疵、拒绝夸张大眼瘦脸
+
+### 2.2 核心人群 2：户外 / 健身垂类博主（付费高价值用户）
+
+- 身份：Instagram/TikTok 中腰部户外 KOL、徒步越野爱好者、露营内容创作者
+- 拍摄设备：GoPro、全景相机、无人机、手机逆光实拍
+- 痛点：户外逆光人脸发黑、天空过曝、路人杂物难消除、批量修图耗时、风景调色与人像美颜冲突
+- 付费意愿强：高频批量修图，愿意购买年度会员解锁批量 AI、无损扩图等高生产力功能
+
+### 2.3 次要人群：小型商业摄影师（桌面端 Studio 付费群体）
+
+棚拍写真、小型婚纱、户外旅拍摄影师，需要精细手动调整工具，但排斥 Facetune 高昂买断价格，偏好 AirBrush 性价比订阅模式。
+
+### 2.4 流失潜在用户
+
+追求极致五官改造、重度 AI 换脸特效人群（自然流向 FaceApp）；专业顶级商业摄影师（重度精细化操作需求，流向 Facetune）。
+
+## 3. 海外影像市场行业分析
+
+### 3.1 市场整体趋势
+
+1. 审美趋势反转：2024-2026 欧美 Z 世代全面摒弃 “无瑕塑料脸”，「Raw 真实质感」「Clean Girl 原生风」成为主流，带雀斑、毛孔的纪实照片点赞量大幅提升；
+2. 垂类赛道爆发：户外徒步、露营、越野、山地健身内容在 TikTok/IG 增速远超普通自拍，户外实拍修图工具存在明显供给缺口；
+3. AI 成为付费核心抓手：单纯美颜工具增长见顶，批量处理、AI 扩图、AI 光影校正等生产力功能成为用户付费决策关键；
+4. Freemium 订阅模式成为海外影像 App 标准商业模式，一次性买断模式持续萎缩。
+
+### 3.2 市场机会点
+
+1. 细分赛道空白：主流竞品均聚焦棚拍自拍，无产品专门针对运动相机、无人机户外素材做算法优化；
+2. 审美红利：AirBrush 原生自然定位完美契合当下海外审美，与竞品形成天然差异化；
+3. 创作者需求爆发：短视频博主日均产出几十至上百张实拍图，批量自动化 AI 工具刚需极强。
+
+### 3.3 市场风险
+
+1. 竞品同质化：中小修图 App 快速模仿自然美颜算法，低端低价分流轻度用户；
+2. 区域政策风险：欧美隐私法规对人脸 AI 算法、用户肖像数据管控趋严；
+3. 流量成本上涨：海外社交平台投放价格持续走高，拉新成本提升。
+
+## 4. 竞品深度对比分析
+
+### 4.1 核心竞品 1：Facetune（行业专业标杆）
+
+1. 定位：重度专业精细化人像精修，主打商业棚拍写真
+2. 审美逻辑：高幅度五官重塑，极致无瑕皮肤，弱化原生纹理
+3. 用户门槛：全手动精细工具，无一键 AI 自动修图，上手难度极高
+4. 商业模式：月订阅 $10.49 + 一次性买断 $99.99 双模式，定价偏高
+5. 短板：户外逆光、复杂风景适配差，无批量 AI 处理，不适合户外博主；操作复杂劝退普通用户
+6. 与 AirBrush 核心差异：专业重度 VS 轻量化自然；棚拍商业 VS 户外纪实；高门槛买断 VS 低门槛订阅
+
+### 4.2 核心竞品 2：FaceApp（AI 特效流量产品）
+
+1. 定位：娱乐向 AI 换脸、年龄变换、特效滤镜，工具属性弱、娱乐属性强
+2. 审美逻辑：特效化改造，不侧重皮肤质感优化
+3. 用户：泛娱乐普通用户，极少垂类创作者
+4. 商业模式：低价订阅 $3.99 / 月，靠流量广告变现
+5. 短板：纪实人像、户外修图能力薄弱，无专业调色、杂物擦除功能
+
+### 4.3 中小长尾竞品（海外各类小众修图 App）
+
+普遍痛点：算法单一，磨皮强度不可控，一键美颜直接抹去雀斑、毛孔，不符合欧美主流审美；无细分场景预设，户外素材处理效果差。
+
+### 4.4 AirBrush 四大核心差异化壁垒
+
+1. **算法审美壁垒**：自研 Skin2.0 肤质模型，底层限制美颜强度，强制保留皮肤纹理，天然适配海外原生风；
+2. **双链路操作壁垒**：一键 AI 自动修图 + 精细化手动微调，兼顾新手与创作者，拉新能力远超纯专业工具；
+3. **户外垂类赛道壁垒**：全行业唯一针对运动相机、无人机户外光影、畸变、杂物做专项优化的人像修图 App；
+4. **商业化定价壁垒**：更低订阅价格，仅订阅模式降低用户付费门槛，靠生产力 AI 功能提升 ARPU。
+
+## 5. 产品核心功能与技术体系
+
+### 5.1 基础免费功能（流量引流）
+
+1. 轻量化一键自然美颜（默认低强度，保留雀斑毛孔）
+2. 基础调色、基础杂物擦除、简单裁剪畸变矫正
+3. 通用日常滤镜、轻度五官微调（幅度克制）
+
+### 5.2 Pro 会员付费核心功能（转化核心）
+
+1. AI 批量图片处理、自定义户外参数预设
+2. AI 无损扩图、专属户外自然光背景替换
+3. 4K 高清无损导出、无水印成片
+4. 高级分层纹理擦除、户外专属胶片滤镜库
+5. 桌面端 AirBrush Studio 全功能解锁
+
+### 5.3 底层核心技术
+
+1. 肤色肤质语义分割神经网络：区分人脸、毛发、植被、岩石，修人像不破坏风景纹理；
+2. 分区美颜强度护栏：眼周、嘴角保留更多皮肤细节，脸颊适度平滑，内置最大修饰阈值；
+3. 户外光影识别 AI：自动区分逆光、强光、雪山高曝光场景，平衡人脸与风景曝光；
+4. 生成式 AI 套件：AI 背景延展、AI 纪实胶片质感生成、AI 人像精修分层处理。
+
+## 6. 完整商业模式拆解
+
+### 6.1 基础模式：Freemium 免费增值
+
+免费版提供基础美颜、简单调色，满足用户轻度日常需求，降低下载与留存门槛；高价值生产力、高阶 AI 功能全部上锁，引导开通月度 / 年度订阅。
+
+### 6.2 收入结构
+
+1. 核心收入：移动端会员订阅（占总收入 85% 以上）；
+2. 补充收入：桌面端 AirBrush Studio 专业订阅、AI 单次生成付费；
+3. 辅助收入：海外户外品牌、美妆博主商业合作功能定制。
+
+### 6.3 付费转化逻辑
+
+1. 流量层：TikTok/IG 投放户外纪实、自然质感成片素材，吸引户外博主、Z 世代下载；
+2. 留存层：一键自然美颜建立用户基础使用习惯，对比竞品突出 “不假面” 优势；
+3. 转化层：用户批量修图、户外复杂擦除、画幅扩图时触发功能限制，引导开通 Pro 会员；
+4. 复购层：年度订阅低价优惠，户外创作者长期产出需求提升续费率。
+
+## 7. 产品迭代机会（结合户外垂类赛道）
+
+### 7.1 短期迭代（快速拉动付费）
+
+户外专属 AI 批量处理工作流，细分山林 / 雪山 / 露营 / 骑行四大场景一键统一调色、擦除、光影校正，仅 Pro 可用。
+
+### 7.2 中期迭代（提升 ARPU）
+
+AI 户外 2.0 扩图与原生自然背景库，解决无人机 / 运动相机画幅受限问题，高清无损导出会员专属。
+
+### 7.3 长期壁垒迭代（拉开与竞品差距）
+
+分层式户外纪实精修 AI，人像美颜与风景纹理独立处理，配套海外流行户外胶片 AI 质感滤镜，吸引专业户外摄影师长期订阅。
+
+### 7.4 体验优化迭代
+
+1. 运动相机、无人机素材一键导入通道，打通拍摄 - 修图 - 社交发布完整链路；
+2. 极端户外光影 AI 自动校正，解决逆光人脸发黑、天空过曝痛点；
+3. 分层纹理 AI 擦除，针对山林、岩石、水面自动匹配背景纹理。
+
+## 8. AI 美化边界管控产品策略（适配欧美自然审美）
+
+### 8.1 算法底层限制
+
+所有美颜工具设置强度上限，磨皮有效平滑区间仅 40%，超过阈值仅淡化瑕疵不消除毛孔雀斑；五官调整极限不改变原生面部比例。
+
+### 8.2 交互引导轻量化修饰
+
+1. 所有美颜工具默认 20%-30% 低强度初始值；
+2. 实时原图对比滑动快捷键，直观展示修饰幅度；
+3. 一键 AI 分两档：默认主推「日常自然版」，强化版隐藏次级菜单。
+
+### 8.3 场景差异化算法
+
+户外纪实素材自动降低美颜权重，优先优化风景光影；棚拍自拍适度放宽调整区间，兼顾多元需求。
+
+### 8.4 产品价值观引导
+
+新手引导传递 “保留真实自我” 理念，弱化完美无瑕宣传；针对深色皮肤、雀斑人群独立训练肤色模型，覆盖多元海外人种审美。
+
+## 9. 用户需求挖掘体系（海外 Z 世代 + 户外博主）
+
+搭建三层闭环需求挖掘渠道：
+
+1. **线上数据监测**
+监控 TikTok/IG 户外标签高赞成片、评论痛点；App 内用户编辑行为数据；海外应用商店差评分词整理需求池；拆解竞品博主手动复合操作，挖掘功能空白。
+2. **分层用户深度调研**
+北美、欧洲、巴西 Z 世代线上访谈；海外本地徒步越野社群线下问卷；结合户外品牌合作经验，挖掘圈层底层创作痛点。
+3. **垂类博主共创机制**
+头部户外 KOL 长期内测新功能；中腰部纳米博主反馈社群，轻量化收集日常实操痛点，转化落地产品需求。
+
+## 10. 产品现存风险与挑战
+
+1. 算法模仿风险：中小竞品快速复刻自然磨皮，需持续深耕户外垂直场景建立差异化；
+2. 用户隐私合规：欧美人脸 AI 算法监管严格，人脸数据处理需持续合规优化；
+3. 流量成本上升：海外投放价格走高，依赖垂类博主内容种草降低获客成本；
+4. 泛娱乐用户分流：FaceApp 低价特效持续抢夺轻度年轻用户，需强化创作者生产力属性区分定位。
+
+## 11. 产品核心竞争力总结
+
+1. 战略差异化：美图海外三产品市场分层，AirBrush 独享欧美拉美自然人像赛道，无内部竞争；
+2. 审美差异化：底层算法绑定海外原生质感审美，踩中 Z 世代反假面修图趋势；
+3. 场景差异化：行业唯一深耕户外纪实、运动相机素材的人像修图工具，匹配垂类博主刚需；
+4. 商业化差异化：低门槛免费引流 + 高生产力 AI 付费，兼顾用户规模与营收增长；
+5. 团队适配优势：计算机技术背景可平衡创意与技术落地，户外实操圈层经验可精准落地垂类场景迭代。
+
+# airbrush
+</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+  <script>
+    const mdText = document.getElementById('md-content').textContent.trim();
+    const md = window.markdownit({html:true,linkify:true}).use(window.markdownitHighlight);
+    const rendered = document.getElementById('rendered');
+    rendered.innerHTML = window.markdownit().render(mdText);
+
+    // Add IDs to headings and wrap sections for collapsible behavior
+    function slugify(s){return s.toLowerCase().replace(/[^a-z0-9\u4e00-\u9fa5]+/g,'-').replace(/^-+|-+$/g,'')}
+    const container = rendered;
+    const headings = container.querySelectorAll('h1,h2,h3');
+    const sections = [];
+    headings.forEach((h, i) => {
+      const level = Number(h.tagName.substring(1));
+      const id = slugify(h.textContent) || ('h-'+i);
+      h.id = id;
+      const section = document.createElement('section');
+      section.className = 'section';
+      const nextSiblings = [];
+      let node = h.nextElementSibling;
+      while(node && !(/^H[1-3]$/.test(node.tagName))){ nextSiblings.push(node); node = node.nextElementSibling }
+      // move heading and its following nodes into section
+      section.appendChild(h.cloneNode(true));
+      nextSiblings.forEach(n=>section.appendChild(n.cloneNode(true)));
+      sections.push({id,level,section,headingText:h.textContent});
+      // remove originals
+      nextSiblings.forEach(n=>n.remove());
+      h.remove();
+    });
+    // Append sections grouped by top-level h2/h3 display (keep order)
+    sections.forEach(s=>{
+      const details = document.createElement('details');
+      details.open = s.level===1 || s.level===2; // default open for top levels
+      const summary = document.createElement('summary');
+      summary.innerHTML = s.section.querySelector('h'+s.level).innerHTML;
+      summary.className = 'summary';
+      const toggle = document.createElement('span'); toggle.className = 'toggle'; toggle.textContent = s.level<=2 ? '展开/收起' : '';
+      summary.appendChild(toggle);
+      const content = document.createElement('div');
+      // append everything except the heading
+      Array.from(s.section.children).slice(1).forEach(n=>content.appendChild(n));
+      details.appendChild(summary);
+      details.appendChild(content);
+      details.id = s.id + '-sec';
+      container.appendChild(details);
+    });
+
+    // Build TOC
+    const toc = document.getElementById('tocList');
+    sections.forEach(s=>{
+      const a = document.createElement('a');
+      a.href = '#'+s.id;
+      a.textContent = (s.level===1? '• ': s.level===2? '◦ ': '▪︎ ') + s.headingText;
+      a.addEventListener('click', (e)=>{
+        e.preventDefault();
+        const target = document.getElementById(s.id+'-sec');
+        if(target){ target.open = true; target.scrollIntoView({behavior:'smooth',block:'start'}); }
+      });
+      toc.appendChild(a);
+    });
+
+    // Search
+    document.getElementById('search').addEventListener('input', (e)=>{
+      const q = e.target.value.trim().toLowerCase();
+      Array.from(toc.querySelectorAll('a')).forEach(a=>{
+        const ok = a.textContent.toLowerCase().includes(q);
+        a.style.display = ok ? 'block' : 'none';
+      });
+      // also highlight matches in content
+      container.querySelectorAll('details').forEach(d => {
+        const txt = d.textContent.toLowerCase();
+        d.style.display = txt.includes(q) ? '' : (q ? 'none' : '');
+      });
+    });
+
+    // Expand/collapse all
+    const toggleBtn = document.getElementById('toggleAll');
+    let allCollapsed = false;
+    toggleBtn.addEventListener('click', ()=>{
+      allCollapsed = !allCollapsed;
+      document.querySelectorAll('details').forEach(d=>d.open = !allCollapsed);
+      toggleBtn.textContent = allCollapsed ? '全部展开' : '全部折叠';
+    });
+
+    // Syntax highlight for code blocks
+    document.querySelectorAll('pre code').forEach((el)=>hljs.highlightElement(el));
+
+    // Small UX: click summary toggles
+    document.addEventListener('click', (e)=>{
+      if(e.target.closest('summary')){
+        const details = e.target.closest('details');
+        details.open = !details.open;
+      }
+    });
+  </script>
+</body>
+</html>
