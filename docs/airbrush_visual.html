@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>AirBrush — 产品理解可视化</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#fbfdff;--card:#ffffff;--muted:#6b7280;--text:#071426;--accent:#0b5fff;--glass:rgba(255,255,255,0.8)}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;background:linear-gradient(180deg,#fbfdff 0%,#f7fbff 100%);color:var(--text)}
+    .layout{display:grid;grid-template-columns:320px 1fr;gap:20px;padding:28px;min-height:100vh}
+    .sidebar{background:var(--glass);backdrop-filter:blur(6px);border-radius:14px;padding:18px;border:1px solid rgba(7,20,38,0.06);height:calc(100vh - 56px);overflow:auto}
+    .main{padding:18px;height:calc(100vh - 56px);overflow:auto}
+    h1{margin:0;font-size:20px}
+    .subtitle{color:var(--muted);font-size:13px;margin-bottom:14px}
+    .search{display:flex;gap:8px;margin-bottom:12px}
+    .search input{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(7,20,38,0.06);background:white}
+    .btn{padding:8px 10px;border-radius:10px;border:1px solid rgba(7,20,38,0.06);background:white;cursor:pointer}
+    .toc a{display:block;padding:8px;border-radius:8px;color:var(--text);text-decoration:none;margin-bottom:6px}
+    .toc a:hover{background:rgba(11,95,255,0.06);color:var(--accent)}
+    .panel{background:var(--card);padding:18px;border-radius:12px;margin-bottom:16px;border:1px solid rgba(7,20,38,0.04)}
+    .kpi{display:flex;gap:12px;flex-wrap:wrap}
+    .kpi .item{flex:0 0 160px;background:linear-gradient(180deg,rgba(11,95,255,0.06),rgba(11,95,255,0.02));padding:12px;border-radius:10px}
+    .charts{display:grid;grid-template-columns:1fr 420px;gap:16px}
+    details{margin-bottom:10px}
+    summary{font-weight:600;cursor:pointer}
+    .fade{transition:all .22s ease}
+    .tag{display:inline-block;background:rgba(6,78,59,0.06);color:#04603f;padding:6px 8px;border-radius:999px;font-size:12px}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:8px;border-bottom:1px solid rgba(7,20,38,0.04);text-align:left}
+    footer{color:var(--muted);font-size:13px;text-align:center;margin-top:12px}
+    @media (max-width:1000px){.layout{grid-template-columns:1fr}.sidebar{height:auto}.main{height:auto}}
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <h1>AirBrush 文档可视化</h1>
+      <div class="subtitle">交互式 · 分层展示 · 数据化视图</div>
+      <div class="search">
+        <input id="search" placeholder="搜索章节或关键词">
+        <button id="collapseAll" class="btn">折叠全局</button>
+      </div>
+      <div id="toc" class="toc"></div>
+      <div style="margin-top:14px;color:var(--muted);font-size:13px">提示：点击目录可跳转并展开对应章节；使用搜索实时过滤。</div>
+    </aside>
+
+    <main class="main">
+      <div class="panel">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+          <div style="flex:1">
+            <h2 style="margin:0">AirBrush 海外影像产品理解文档</h2>
+            <div class="subtitle">基于 README.md 的增强可视化展示</div>
+          </div>
+          <div style="text-align:right">
+            <div class="tag">版本：交互增强 v1</div>
+            <div style="height:6px"></div>
+            <button id="downloadBtn" class="btn">下载 HTML</button>
+          </div>
+        </div>
+        <div class="kpi" id="kpis"></div>
+      </div>
+
+      <div class="charts panel">
+        <div id="contentArea"></div>
+        <div>
+          <canvas id="pieChart" style="width:100%;height:240px"></canvas>
+          <div style="height:12px"></div>
+          <canvas id="barChart" style="width:100%;height:180px"></canvas>
+        </div>
+      </div>
+
+      <div id="sections"></div>
+      <footer>由脚本生成 · 浅色背景 · 深色文字 · 交互分层展示</footer>
+    </main>
+  </div>
+
+  <script id="md-source" type="text/plain">
+# AirBrush 海外影像产品理解文档
+
+## 1. 产品基础概述
+
+### 1.1 主体公司背景
+
+AirBrush 开发主体为美图旗下新加坡独立海外子公司 **Pixocial**，美图采取国内外业务完全隔离运营策略，Pixocial 独立负责海外研发、商业化、市场投放，不与国内美图秀秀团队共用产品体系、算法投放渠道。
+2015 年全球首发，是美图出海**第一款实现规模化盈利**的影像修图 App，承担美图欧美、拉美市场核心营收任务。
+
+### 1.2 海外三条产品线分层布局（内部无内卷，市场完全隔离）
+
+表格
+
+| 产品 | 目标市场 | 核心定位 | 核心用户 |
+| --- | --- | --- | --- |
+| AirBrush | 欧美、拉美 | 原生自然人像精修，保留皮肤质感 | 海外 Z 世代、户外 / 健身博主、轻度商业创作者 |
+| BeautyPlus | 日韩、东南亚 | 轻量日常美颜，软萌少女风 | 亚洲海外普通年轻女性、自拍用户 |
+| Vmake | 全球（侧重北美） | AI 虚拟试妆、妆容特效 | 美妆博主、美妆品牌合作渠道 |
+
+### 1.3 核心产品定位
+
+slogan 底层逻辑：**自然增强，而非五官改造**
+
+### 1.4 核心运营数据
+
+1. 累计全球下载量：9800 万 +
+2. 付费转化率：超 10%（影像工具类头部水平）
+3. 用户地域分布：巴西占 50% 以上，美国 25%，剩余欧洲、拉美各国
+4. 市场排名：北美美图系影像 MAU 合计 350 万，细分赛道第一；欧洲市场 MAU 仅次于 FaceApp，排名第二
+5. 商业化定价：移动端订阅 $7.99 / 月、$35.99 / 年；桌面 Studio $12.95 / 月
+
+## 2. 目标用户分层分析
+
+### 2.1 核心人群 1：海外 Z 世代普通年轻用户（免费流量基本盘）
+
+- 年龄：16-28 岁，北美、拉美学生、上班族
+- 使用场景：日常自拍、周末露营、短途徒步、健身打卡、旅行随拍
+- 核心诉求：一键出片，操作简单，修完不假面，免费基础功能够用，少量高级功能愿意小额订阅
+- 审美偏好：低饱和、胶片纪实、保留皮肤瑕疵、拒绝夸张大眼瘦脸
+
+### 2.2 核心人群 2：户外 / 健身垂类博主（付费高价值用户）
+
+- 身份：Instagram/TikTok 中腰部户外 KOL、徒步越野爱好者、露营内容创作者
+- 拍摄设备：GoPro、全景相机、无人机、手机逆光实拍
+- 痛点：户外逆光人脸发黑、天空过曝、路人杂物难消除、批量修图耗时、风景调色与人像美颜冲突
+- 付费意愿强：高频批量修图，愿意购买年度会员解锁批量 AI、无损扩图等高生产力功能
+
+## 3. 海外影像市场行业分析
+
+### 3.1 市场整体趋势
+
+1. 审美趋势反转：2024-2026 欧美 Z 世代全面摒弃 “无瑕塑料脸”，「Raw 真实质感」「Clean Girl 原生风」成为主流，带雀斑、毛孔的纪实照片点赞量大幅提升；
+2. 垂类赛道爆发：户外徒步、露营、越野、山地健身内容在 TikTok/IG 增速远超普通自拍，户外实拍修图工具存在明显供给缺口；
+
+## 4. 竞品深度对比分析
+
+### 4.1 核心竞品 1：Facetune（行业专业标杆）
+
+1. 定位：重度专业精细化人像精修，主打商业棚拍写真
+
+## 5. 产品核心功能与技术体系
+
+### 5.1 基础免费功能
+
+- 轻量化一键自然美颜（默认低强度）
+- 基础调色、基础杂物擦除、简单裁剪畸变矫正
+
+## 6. 商业模式与变现
+
+- Freemium 模式，订阅为主
+
+## 7. 迭代机会与风险
+
+- 短期：户外专属批量 AI 工作流
+- 风险：算法模仿、隐私合规、流量成本
+
+</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Render markdown source
+    const mdSrc = document.getElementById('md-source').textContent;
+    const md = window.markdownit({html:true,linkify:true});
+    const html = md.render(mdSrc);
+    document.getElementById('contentArea').innerHTML = html;
+
+    // Build sections from headings
+    const content = document.getElementById('contentArea');
+    const headings = content.querySelectorAll('h1,h2,h3');
+    const sections = [];
+    headings.forEach((h,i)=>{
+      const level = Number(h.tagName.substring(1));
+      const id = 's-'+i;
+      const detail = document.createElement('details');
+      detail.open = level<=2;
+      const summary = document.createElement('summary'); summary.innerHTML = h.innerHTML;
+      const wrapper = document.createElement('div');
+      let node = h.nextElementSibling;
+      while(node && !(/^H[1-3]$/.test(node.tagName))){ wrapper.appendChild(node.cloneNode(true)); node = node.nextElementSibling }
+      detail.appendChild(summary); detail.appendChild(wrapper);
+      const card = document.createElement('div'); card.className='panel fade'; card.appendChild(detail);
+      sections.push({id,level,card,headingText:h.textContent});
+    });
+
+    // Insert sections into DOM
+    const sectionsContainer = document.getElementById('sections'); sectionsContainer.innerHTML='';
+    sections.forEach(s=>sectionsContainer.appendChild(s.card));
+
+    // Build TOC
+    const toc = document.getElementById('toc'); toc.innerHTML='';
+    sections.forEach(s=>{
+      const a = document.createElement('a'); a.href='#'+s.id; a.textContent = (s.level===1?'• ': s.level===2?'◦ ':'▪︎ ')+ s.headingText;
+      a.addEventListener('click',(e)=>{ e.preventDefault(); const det = s.card.querySelector('details'); det.open = true; s.card.scrollIntoView({behavior:'smooth'}); });
+      toc.appendChild(a);
+    });
+
+    // Extract KPIs from text
+    const text = mdSrc;
+    function find(regex){ const m = text.match(regex); return m? m[1].trim() : null }
+    const downloads = find(/累计全球下载量：([\d,\.\+\s\w%]+)/) || '9800 万+';
+    const payrate = find(/付费转化率：([^\n]+)/) || '超 10%';
+    const regions = find(/用户地域分布：([^\n]+)/) || '巴西 50%+，美国 25%';
+    const maurank = find(/市场排名：([^\n]+)/) || '北美细分赛道第一';
+
+    const kpis = document.getElementById('kpis');
+    kpis.innerHTML = '';
+    [['下载量',downloads],['付费转化率',payrate],['地域分布',regions],['市场排名',maurank]].forEach(([t,v])=>{
+      const el = document.createElement('div'); el.className='item'; el.innerHTML = `<div style="color:var(--muted);font-size:12px">${t}</div><div style="font-weight:700;font-size:16px">${v}</div>`; kpis.appendChild(el);
+    });
+
+    // Build charts from region text
+    // parse '巴西占 50% 以上，美国 25%'
+    let regionData = [{label:'Brazil',v:50},{label:'USA',v:25},{label:'Others',v:25}];
+    const regMatch = text.match(/巴西占\s*([\d]{1,3})%?\s*以上[,，]?\s*美国\s*([\d]{1,3})%/);
+    if(regMatch){ const b = parseInt(regMatch[1],10); const us = parseInt(regMatch[2],10); regionData = [{label:'Brazil',v:b},{label:'USA',v:us},{label:'Others',v:Math.max(0,100-b-us)}]; }
+
+    // Pie chart
+    const pieCtx = document.getElementById('pieChart').getContext('2d');
+    new Chart(pieCtx,{type:'pie',data:{labels:regionData.map(r=>r.label),datasets:[{data:regionData.map(r=>r.v),backgroundColor:['#2563eb','#ef4444','#10b981']}]},options:{plugins:{legend:{position:'bottom'}}}});
+
+    // Bar chart for some metrics
+    const barCtx = document.getElementById('barChart').getContext('2d');
+    const numbers = [98,10,350];
+    new Chart(barCtx,{type:'bar',data:{labels:['下载量(百万)','付费转化(%)','MAU(万)'],datasets:[{label:'指标',data:numbers,backgroundColor:'#0b5fff'}]},options:{scales:{y:{beginAtZero:true}}}});
+
+    // Search filter
+    document.getElementById('search').addEventListener('input', (e)=>{
+      const q = e.target.value.trim().toLowerCase();
+      sections.forEach(s=> s.card.style.display = q? (s.card.textContent.toLowerCase().includes(q)? '': 'none') : '');
+      Array.from(toc.querySelectorAll('a')).forEach(a=> a.style.display = a.textContent.toLowerCase().includes(q) ? '' : 'none');
+    });
+
+    // collapse button
+    document.getElementById('collapseAll').addEventListener('click', ()=>{
+      const anyOpen = Array.from(document.querySelectorAll('details')).some(d=>d.open);
+      document.querySelectorAll('details').forEach(d=>d.open = !anyOpen);
+    });
+
+    // download HTML
+    document.getElementById('downloadBtn').addEventListener('click', ()=>{
+      const html = '<!doctype html>\n' + document.documentElement.outerHTML;
+      const blob = new Blob([html],{type:'text/html'}); const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'airbrush-docs-visual.html'; document.body.appendChild(a); a.click(); a.remove();
+    });
+  </script>
+</body>
+</html>
